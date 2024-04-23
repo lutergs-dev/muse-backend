@@ -1,0 +1,30 @@
+spring:
+  application:
+    name: muse-backend
+
+  datasource:
+    driver-class-name: oracle.jdbc.OracleDriver
+
+  kafka:
+    producer:
+      acks: all
+    streams:
+      security:
+        protocol: SASL_SSL
+      properties:
+        sasl.mechanism: PLAIN
+    properties:
+      sasl.mechanism: PLAIN
+      security.protocol: SASL_SSL
+
+  jpa:
+    database: oracle
+    database-platform: org.hibernate.dialect.OracleDialect
+    show-sql: true
+    hibernate:
+      ddl-auto: validate
+
+logging:
+  level:
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
