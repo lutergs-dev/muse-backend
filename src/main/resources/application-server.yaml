@@ -18,8 +18,8 @@ spring:
 
   data:
     redis:
-      cluster:
-        nodes: ${REDIS_CLUSTER_NODES}
+#      cluster:
+#        nodes: ${REDIS_CLUSTER_NODES}
       sentinel:
         master: ${REDIS_SENTINEL_MASTER_NAME}
         nodes: ${REDIS_SENTINEL_NODES}
