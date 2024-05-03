@@ -26,7 +26,6 @@ class UserInfoRepositoryImpl(
   }
 
   override fun saveUser(user: User): User {
-    println("this is saveUserFromRepository : $user")
     val dbEntity = this.dbEntityConvertService.saveDbEntity(user)
     this.kafkaStreamsTopicProducer.produce(dbEntity.id!!, user.nowPlaying)
     return this.toUser(dbEntity, user.nowPlaying)

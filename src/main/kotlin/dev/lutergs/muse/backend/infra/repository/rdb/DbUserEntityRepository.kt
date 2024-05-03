@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository
 @Repository
 interface DbUserEntityRepository: JpaRepository<DbUserEntity, Long> {
   fun findByVendorAndVendorUid(vendor: String, vendorUid: String): DbUserEntity?
+  fun findByName(name: String): DbUserEntity?
 }

@@ -12,12 +12,11 @@ data class User (
 ) {
 
   fun changeTrack(track: Track): User {
-
     return User(
       id = this.id,
       info = this.info,
       nowPlaying = NowPlaying.fromTrack(track)
-    ).also { println("User changed Track! $it") }
+    )
   }
 
   fun setPlaybackStatus(playbackStatus: PlaybackStatus): User {

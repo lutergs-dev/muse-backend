@@ -1,13 +1,18 @@
 package dev.lutergs.muse.backend.domain.entity.userInfo
 
 import dev.lutergs.muse.backend.domain.entity.userInfo.auth.AuthInfo
+import dev.lutergs.muse.backend.util.generateRandomString
+import java.util.*
 
 data class UserInfo (
-  val name: String?,      // 유저가 막 로그인한 경우엔 null 임
+  val name: String,      //
   val auth: AuthInfo?,    // 외부로 나갈 땐 공개되지 않음
   val friends: List<Long>
 ) {
   fun changeNickname(name: String): UserInfo {
+    if (name.length > 30) {
+      throw RuntimeException("닉네임은 30자를 초과할 수 없습니다.")
+    }
     return UserInfo(
       name = name,
       auth = this.auth,
@@ -48,7 +53,7 @@ data class UserInfo (
   companion object {
     fun fromAuthInfo(auth: AuthInfo): UserInfo {
       return UserInfo(
-        name = null,
+        name = generateRandomString(),
         auth = auth,
         friends = listOf()
       )

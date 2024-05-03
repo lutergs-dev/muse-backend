@@ -2,6 +2,7 @@ package dev.lutergs.muse.backend.infra.repository.rdb
 
 import dev.lutergs.muse.backend.domain.entity.User
 import dev.lutergs.muse.backend.domain.entity.userInfo.auth.AuthInfo
+import dev.lutergs.muse.backend.util.generateRandomString
 import org.springframework.data.repository.findByIdOrNull
 
 class DbEntityConvertService(
@@ -20,13 +21,19 @@ class DbEntityConvertService(
         ?.let { this.repository.save(it) }
         ?: throw RuntimeException("user 가 존재하지 않습니다!")
     } else {
-      DbUserEntity()
+      val dbUser = DbUserEntity()
         .apply {
           this.name = user.info.name
           this.vendor = user.info.auth!!.vendor.name
           this.vendorUid = user.info.auth.id
         }
-        .let { this.repository.save(it) }
+      // user nickname 이 DB 에 존재하지 않을 때까지 search
+      while (true) {
+        this.repository.findByName(dbUser.name)
+          ?.run { dbUser.name = generateRandomString() }
+          ?: break
+      }
+      this.repository.save(dbUser)
     }
   }
 
@@ -34,7 +41,6 @@ class DbEntityConvertService(
     return this.repository.findByIdOrNull(user.id!!)
       ?.apply {
         val dbEntity = this
-        println("user ${this.id} ${this.name} will add friend ${friendId}")
         DbUserRelationEntity().apply {
           this.user = dbEntity
           this.friendId = friendId

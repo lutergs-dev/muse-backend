@@ -1,6 +1,8 @@
 package dev.lutergs.muse.backend.infra.rest.muse
 
+import dev.lutergs.muse.backend.domain.entity.track.PlaybackStatus
 import dev.lutergs.muse.backend.domain.entity.track.Track
+import dev.lutergs.muse.backend.infra.rest.muse.dto.UserChangeTrackPlayStatusDto
 import dev.lutergs.muse.backend.service.UserNowPlayingService
 import org.springframework.web.servlet.function.ServerRequest
 import org.springframework.web.servlet.function.ServerResponse
@@ -17,16 +19,10 @@ class UserNowPlayingRestHandler(
       ?: ServerResponse.badRequest().build()
   }
 
-  fun playTrack(request: ServerRequest): ServerResponse {
+  fun changeTrackPlayStatus(request: ServerRequest): ServerResponse {
     return this.getToken(request)
-      ?.let { this.userNowPlayingService.playTrack(it) }
-      ?.let { ServerResponse.ok().body(it) }
-      ?: ServerResponse.badRequest().build()
-  }
-
-  fun pauseTrack(request: ServerRequest): ServerResponse {
-    return this.getToken(request)
-      ?.let { this.userNowPlayingService.pauseTrack(it) }
+      ?.let { it to request.body(UserChangeTrackPlayStatusDto::class.java) }
+      ?.let { this.userNowPlayingService.changeTrackPlayStatus(it.first, PlaybackStatus.valueOf(it.second.status)) }
       ?.let { ServerResponse.ok().body(it) }
       ?: ServerResponse.badRequest().build()
   }

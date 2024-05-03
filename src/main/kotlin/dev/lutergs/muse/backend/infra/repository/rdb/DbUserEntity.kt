@@ -14,8 +14,8 @@ class DbUserEntity {
   @Column(name = "ID")
   var id: Long? = null
 
-  @Column(name = "NAME", nullable = true)
-  var name: String? = null
+  @Column(name = "NAME", nullable = false)
+  var name: String = ""
 
   @Column(name = "AUTH_VENDOR", nullable = false)
   var vendor: String = ""

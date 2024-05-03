@@ -16,3 +16,7 @@ data class UserLoginDto(
 data class UserChangeNickNameDto (
   val name: String
 )
+
+data class UserChangeTrackPlayStatusDto (
+  val status: String
+)

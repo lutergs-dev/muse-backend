@@ -3,7 +3,6 @@ package dev.lutergs.muse.backend.infra.rest.muse
 import dev.lutergs.muse.backend.domain.entity.userInfo.auth.AuthVendor
 import dev.lutergs.muse.backend.infra.rest.muse.dto.UserChangeNickNameDto
 import dev.lutergs.muse.backend.infra.rest.muse.dto.UserLoginDto
-import dev.lutergs.muse.backend.service.UserNowPlayingService
 import dev.lutergs.muse.backend.service.UserInfoService
 import jakarta.servlet.http.Cookie
 import org.slf4j.Logger
@@ -13,7 +12,6 @@ import org.springframework.web.servlet.function.ServerResponse
 import org.springframework.web.servlet.function.paramOrNull
 
 class UserInfoRestHandler(
-  private val userNowPlayingService: UserNowPlayingService,
   private val userInfoService: UserInfoService,
   private val logger: Logger = LoggerFactory.getLogger(UserInfoRestHandler::class.java)
 ) {
@@ -40,8 +38,10 @@ class UserInfoRestHandler(
       .let { this.userInfoService.userLogin(AuthVendor.valueOf(it.type), it.uid) }
       .let {
         ServerResponse.ok()
+
+          // TODO : domain 이름을 configuration variable 로 주입받을 수 있도록 설정 필요
           .cookie(Cookie("project_muse", it.second).apply {
-            this.domain = "localhost"
+            this.domain = "192.168.9.8"
             this.path = "/"
           })
           .body(it.first)

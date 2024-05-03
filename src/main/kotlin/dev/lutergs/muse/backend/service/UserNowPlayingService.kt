@@ -20,27 +20,15 @@ class UserNowPlayingService(
       ?: throw RuntimeException("존재하지 않는 user 입니다.")
   }
 
-  // user 가 곡을 일시정지함
-  fun pauseTrack(token: String) {
+  fun changeTrackPlayStatus(token: String, status: PlaybackStatus) {
     this.userAuthRepository.getUserFromToken(token)
-      ?.let { this.modify(it) { user -> user.setPlaybackStatus(PlaybackStatus.PAUSED) } }
-      ?: throw RuntimeException("존재하지 않는 user 입니다.")
-  }
-
-  // user 가 곡을 다시 재생함
-  fun playTrack(token: String) {
-    this.userAuthRepository.getUserFromToken(token)
-      ?.let { this.modify(it) { user -> user.setPlaybackStatus(PlaybackStatus.PLAYING) } }
+      ?.let { this.modify(it) { user -> user.setPlaybackStatus(status)} }
       ?: throw RuntimeException("존재하지 않는 user 입니다.")
   }
 
   private fun modify(user: User, userChangeFunc: (User) -> User): User {
-    val res = userChangeFunc(user)
-    println(res)
-
     return userChangeFunc
       .invoke(user)
-      .also { println(user) }
       .let { this.userInfoRepository.saveUser(it) }
       .also { this.notifier.notify(it) }
   }

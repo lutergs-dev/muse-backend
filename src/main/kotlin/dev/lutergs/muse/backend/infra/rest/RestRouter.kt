@@ -29,8 +29,7 @@ class RestRouter(
 
       // userNowPlayingRestHandler
       POST("/track", userNowPlayingRestHandler::changeTrack)
-      POST("/track/play", userNowPlayingRestHandler::playTrack)
-      POST("/track/pause", userNowPlayingRestHandler::pauseTrack)
+      POST("/track/status", userNowPlayingRestHandler::changeTrackPlayStatus)
 
       // kafkaStreamsRestHandler
       GET("/", userInfoRestHandler::getUser)
