@@ -2,22 +2,21 @@ package dev.lutergs.muse.backend.infra.crypto
 
 import java.io.File
 import java.security.KeyFactory
+import java.security.KeyPair
 import java.security.PrivateKey
 import java.security.PublicKey
 import java.security.spec.PKCS8EncodedKeySpec
 import java.security.spec.X509EncodedKeySpec
 import java.util.*
 
-class KeyPair(
+class DefaultKeyPair(
   publicKeyPath: String,
   privateKeyPath: String
 ) {
-  val publicKey: PublicKey
-  val privateKey: PrivateKey
+  val default: KeyPair
 
   init {
-    this.publicKey = this.readPublicKey(publicKeyPath)
-    this.privateKey = this.readPrivateKey(privateKeyPath)
+    this.default = KeyPair(this.readPublicKey(publicKeyPath), this.readPrivateKey(privateKeyPath))
   }
 
   private fun readPublicKey(filePath: String): PublicKey {

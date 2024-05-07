@@ -1,6 +1,7 @@
 package dev.lutergs.muse.backend.infra.config
 
 import dev.lutergs.muse.backend.infra.config.properties.KafkaStreamsConfigProperties
+import dev.lutergs.muse.backend.infra.crypto.TokenManager
 import dev.lutergs.muse.backend.infra.repository.kafka.streams.internal.KafkaStreamsInternalRepository
 import dev.lutergs.muse.backend.infra.rest.kafkastreams.KafkaStreamsRestHandler
 import dev.lutergs.muse.backend.infra.rest.muse.UserInfoRestHandler
@@ -18,17 +19,20 @@ class RestSpringBeanConfig(
   @Bean
   fun userInfoRestHandler(
     userNowPlayingService: UserNowPlayingService,
-    userInfoService: UserInfoService
+    userInfoService: UserInfoService,
+    tokenManager: TokenManager
   ): UserInfoRestHandler = UserInfoRestHandler(
-    userNowPlayingService = userNowPlayingService,
-    userInfoService = userInfoService
+    userInfoService = userInfoService,
+    tokenManager = tokenManager
   )
 
   @Bean
   fun userNowPlayingRestHandler(
     userNowPlayingService: UserNowPlayingService,
+    tokenManager: TokenManager
   ): UserNowPlayingRestHandler = UserNowPlayingRestHandler(
-    userNowPlayingService = userNowPlayingService
+    userNowPlayingService = userNowPlayingService,
+    tokenManager = tokenManager
   )
 
   @Bean

@@ -1,7 +1,6 @@
 package dev.lutergs.muse.backend.infra.config
 
 import dev.lutergs.muse.backend.domain.repository.NowPlayingNotifier
-import dev.lutergs.muse.backend.domain.repository.UserAuthRepository
 import dev.lutergs.muse.backend.domain.repository.UserInfoRepository
 import dev.lutergs.muse.backend.service.UserNowPlayingService
 import dev.lutergs.muse.backend.service.UserInfoService
@@ -13,21 +12,17 @@ class ServiceSpringBeanConfig {
 
   @Bean
   fun userInfoService(
-    userInfoRepository: UserInfoRepository,
-    userAuthRepository: UserAuthRepository
+    userInfoRepository: UserInfoRepository
   ): UserInfoService = UserInfoService(
-    userInfoRepository = userInfoRepository,
-    userAuthRepository = userAuthRepository
+    userInfoRepository = userInfoRepository
   )
 
   @Bean
   fun userNowPlayingService(
     userInfoRepository: UserInfoRepository,
-    userAuthRepository: UserAuthRepository,
     notifier: NowPlayingNotifier
   ): UserNowPlayingService = UserNowPlayingService(
     userInfoRepository = userInfoRepository,
-    userAuthRepository = userAuthRepository,
     notifier = notifier
   )
 }

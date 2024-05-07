@@ -1,9 +1,7 @@
 package dev.lutergs.muse.backend.infra.config
 
 import dev.lutergs.muse.backend.domain.repository.UserInfoRepository
-import dev.lutergs.muse.backend.infra.crypto.RsaCrypter
 import dev.lutergs.muse.backend.infra.repository.NowPlayingNotifierImpl
-import dev.lutergs.muse.backend.infra.repository.UserAuthRepositoryImpl
 import dev.lutergs.muse.backend.infra.repository.UserInfoRepositoryImpl
 import dev.lutergs.muse.backend.infra.repository.kafka.producer.KafkaStreamsTopicProducer
 import dev.lutergs.muse.backend.infra.repository.kafka.producer.WebsocketTopicProducer
@@ -34,14 +32,5 @@ class ImplSpringBeanConfig {
     kafkaStreamsQueryService = kafkaStreamsQueryService,
     kafkaStreamsTopicProducer = kafkaStreamsTopicProducer,
     dbEntityConvertService = dbEntityConvertService
-  )
-
-  @Bean
-  fun userAuthRepositoryImpl(
-    rsaCrypter: RsaCrypter,
-    userInfoRepository: UserInfoRepository
-  ): UserAuthRepositoryImpl = UserAuthRepositoryImpl(
-    rsaCrypter = rsaCrypter,
-    userInfoRepository = userInfoRepository
   )
 }

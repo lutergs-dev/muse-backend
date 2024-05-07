@@ -1,7 +1,7 @@
 package dev.lutergs.muse.backend.infra.repository.kafka.streams.internal
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import dev.lutergs.muse.backend.infra.config.properties.HttpUrlConfigProperties
+import dev.lutergs.muse.backend.infra.config.properties.KafkaHttpUrlConfigProperties
 import dev.lutergs.muse.backend.infra.config.properties.KafkaStreamsConfigProperties
 import dev.lutergs.muse.backend.infra.repository.kafka.serialization.LongDeserializer
 import dev.lutergs.muse.backend.infra.repository.kafka.serialization.LongSerializer
@@ -20,11 +20,10 @@ import org.springframework.data.redis.core.StringRedisTemplate
 
 class KafkaStreamsTopology(
   private val kafkaStreamsConfig: KafkaStreamsConfigProperties,
-  private val httpUrlConfigs: HttpUrlConfigProperties,
+  private val httpUrlConfigs: KafkaHttpUrlConfigProperties,
   private val kafkaStreamsBuilder: StreamsBuilder,
   private val objectMapper: ObjectMapper,
-  private val redisClient: StringRedisTemplate,
-  private val serverPort: String
+  private val redisClient: StringRedisTemplate
 ) {
   private val nowPlayingSerde = Serdes.serdeFrom(
     NowPlayingSerializer(this.objectMapper),
@@ -42,7 +41,7 @@ class KafkaStreamsTopology(
     this.redisClient.opsForHash<String, String>().put(
       "KafkaStreamsClient",
       this.kafkaStreamsConfig.currentMachineKey,
-      this.httpUrlConfigs.buildHttpUrl(this.serverPort.toInt())
+      this.httpUrlConfigs.buildUrl()
     )
   }
 

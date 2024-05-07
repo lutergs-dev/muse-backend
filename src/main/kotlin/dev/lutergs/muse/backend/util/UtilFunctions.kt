@@ -3,10 +3,9 @@ package dev.lutergs.muse.backend.util
 import java.util.*
 
 
-fun generateRandomString(): String {
+fun generateRandomString(length: Int = 30): String {
   val charPool: List<Char> = ('A'..'Z') + ('a'..'z') + ('0'..'9') + '_'
-  val stringLength = 30
-  return (1..stringLength)
+  return (1..length)
     .map { Random().nextInt(charPool.size) }
     .map { charPool[it] }
     .joinToString("")

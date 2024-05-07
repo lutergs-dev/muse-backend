@@ -26,13 +26,13 @@ class RestRouter(
       GET("/user/friends", userInfoRestHandler::getUserFriends)
       PUT("/user/friends", userInfoRestHandler::addFriend)
       DELETE("/user/friends", userInfoRestHandler::removeFriend)
+      POST("/user/token", userInfoRestHandler::refreshToken)
 
       // userNowPlayingRestHandler
       POST("/track", userNowPlayingRestHandler::changeTrack)
       POST("/track/status", userNowPlayingRestHandler::changeTrackPlayStatus)
 
       // kafkaStreamsRestHandler
-      GET("/", userInfoRestHandler::getUser)
       GET("/kstreams/{userId}", kafkaStreamsRestHandler::getNowPlaying)
     }
   }

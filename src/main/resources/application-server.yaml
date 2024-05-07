@@ -18,20 +18,18 @@ spring:
 
   data:
     redis:
-#      cluster:
-#        nodes: ${REDIS_CLUSTER_NODES}
       sentinel:
         master: ${REDIS_SENTINEL_MASTER_NAME}
         nodes: ${REDIS_SENTINEL_NODES}
 
 custom:
-  http:
-    url:
-      protocol-type: http
-      host-name: ${KUBERNETES_HOSTNAME}
-      service-name: ${KUBERNETES_SERVICE}
-      namespace: ${KUBERNETES_NAMESPACE}
   kafka:
+    http:
+      url:
+        protocol-type: http
+        host-name: ${KUBERNETES_HOSTNAME}
+        service-name: ${KUBERNETES_SERVICE}
+        namespace: ${KUBERNETES_NAMESPACE}
     streams:
       communicate-key: ${STREAMS_COMMUNICATION_KEY}
       current-machine-key: ${STREAMS_MACHINE_KEY}
@@ -42,8 +40,12 @@ custom:
       time:
         stop-timeout-second: ${STREAMS_STOP_TIMEOUT_SECOND}
         scan-frequency-second: ${STREAMS_SCAN_FREQUENCY_SECOND}
-  crypto:
-    key:
-      path:
-        private: ${RSA_PRIVATE_KEY_PATH}
-        public: ${RSA_PUBLIC_KEY_PATH}
+  web:
+    domain: ${MUSE_DOMAIN}
+    protocol-type: https
+    key-location:
+      public: ${RSA_PUBLIC_KEY_PATH}
+      private: ${RSA_PRIVATE_KEY_PATH}
+    token-expire:
+      access-token: ${ACCESS_TOKEN_EXPIRE_HOUR}
+      refresh-token: ${REFRESH_TOKEN_EXPIRE_HOUR}
