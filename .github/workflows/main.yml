@@ -62,7 +62,7 @@ jobs:
           file: Dockerfile
           push: true
           tags: |
-            ${{ steps.login-to-ecr.outputs.registry }}/${{ vars.ECR_REPOSITORY_NAME }}:${{ github.sha }}
+            ${{ steps.login-to-ecr.outputs.registry }}/${{ vars.ECR_REPOSITORY_NAME }}:latest
             ${{ steps.login-to-ecr.outputs.registry }}/${{ vars.ECR_REPOSITORY_NAME }}:${{ env.VERSION }} 
 
       - name: install kubectl
