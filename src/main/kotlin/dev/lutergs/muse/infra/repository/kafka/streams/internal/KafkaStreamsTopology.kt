@@ -1,23 +1,23 @@
 package dev.lutergs.muse.infra.repository.kafka.streams.internal
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import dev.lutergs.muse.infra.config.properties.KafkaStreamsConfigProperties
 import dev.lutergs.muse.infra.repository.kafka.serialization.LongDeserializer
 import dev.lutergs.muse.infra.repository.kafka.serialization.LongSerializer
 import dev.lutergs.muse.infra.repository.kafka.streams.processor.TTLProcessorSupplier
 import dev.lutergs.muse.infra.repository.kafka.serialization.NowPlayingDeserializer
 import dev.lutergs.muse.infra.repository.kafka.serialization.NowPlayingSerializer
+import dev.lutergs.muse.service.UserNowPlayingService
 import jakarta.annotation.PostConstruct
 import jakarta.annotation.PreDestroy
 import org.apache.kafka.common.serialization.Serdes
 import org.apache.kafka.streams.StreamsBuilder
 import org.apache.kafka.streams.Topology
 import org.apache.kafka.streams.kstream.Consumed
-import org.apache.kafka.streams.kstream.Produced
 import org.apache.kafka.streams.state.Stores
 import org.springframework.data.redis.core.StringRedisTemplate
 
 class KafkaStreamsTopology(
+  private val userNowPlayingService: UserNowPlayingService,
   private val kafkaStreamsConfig: KafkaStreamsConfigProperties,
   private val httpUrlConfigs: dev.lutergs.muse.infra.config.properties.KafkaHttpUrlConfigProperties,
   private val kafkaStreamsBuilder: StreamsBuilder,
@@ -82,11 +82,12 @@ class KafkaStreamsTopology(
           maxAge = this.kafkaStreamsConfig.time.stopTimeout,
           scanFrequency = this.kafkaStreamsConfig.time.scanFrequency,
           ttlStoreName = this.kafkaStreamsConfig.store.ttlStoreName,
-          userTrackStoreName = this.kafkaStreamsConfig.store.userNowPlayingStoreName
+          userTrackStoreName = this.kafkaStreamsConfig.store.userNowPlayingStoreName,
+          userNowPlayingService = this.userNowPlayingService
         ),
         this.kafkaStreamsConfig.store.ttlStoreName, this.kafkaStreamsConfig.store.userNowPlayingStoreName
       )
-      .to(this.kafkaStreamsConfig.inputTopicName, Produced.with(this.customLongSerde, this.nowPlayingSerde))
+//      .to(this.kafkaStreamsConfig.inputTopicName, Produced.with(this.customLongSerde, this.nowPlayingSerde))
   }
 }
 

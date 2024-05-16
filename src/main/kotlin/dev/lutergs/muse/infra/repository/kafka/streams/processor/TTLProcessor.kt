@@ -2,6 +2,7 @@ package dev.lutergs.muse.infra.repository.kafka.streams.processor
 
 import dev.lutergs.muse.domain.entity.track.PlaybackStatus
 import dev.lutergs.muse.domain.entity.userInfo.NowPlaying
+import dev.lutergs.muse.service.UserNowPlayingService
 import org.apache.kafka.streams.processor.PunctuationType
 import org.apache.kafka.streams.processor.api.Processor
 import org.apache.kafka.streams.processor.api.ProcessorContext
@@ -14,7 +15,8 @@ class TTLProcessor(
   private val maxAge: Duration,
   private val scanFrequency: Duration,
   private val ttlStoreName: String,
-  private val userTrackStoreName: String
+  private val userTrackStoreName: String,
+  private val userNowPlayingService: UserNowPlayingService
 ): Processor<Long, NowPlaying?, Long, NowPlaying?> {
   private lateinit var context: ProcessorContext<Long, NowPlaying?>
   private lateinit var ttlStateStore: KeyValueStore<Long, Long>
@@ -31,13 +33,8 @@ class TTLProcessor(
       this.ttlStateStore.all().use { all ->
         all.forEachRemaining { kv ->
           if (kv.value != null && kv.value < cutOff) {
-            this.context.forward(Record(
-              kv.key,
-              this.userTrackStateStore
-                .get(kv.key)
-                .setPlaybackStatus(PlaybackStatus.STOPPED),
-              timestamp)
-            )
+            // timeout 이라면, 그냥 timeout 난 API 를 재호출
+            this.userNowPlayingService.changeTrackPlayStatus(kv.key, PlaybackStatus.STOPPED)
           }
         }
       }
@@ -58,7 +55,4 @@ class TTLProcessor(
     }
   }
 
-  override fun close() {
-    super.close()
-  }
 }

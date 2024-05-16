@@ -9,6 +9,7 @@ import dev.lutergs.muse.infra.repository.kafka.streams.external.KafkaStreamsRest
 import dev.lutergs.muse.infra.repository.kafka.streams.internal.KafkaStreamsInternalRepository
 import dev.lutergs.muse.infra.repository.kafka.streams.internal.KafkaStreamsStateStore
 import dev.lutergs.muse.infra.repository.kafka.streams.internal.KafkaStreamsTopology
+import dev.lutergs.muse.service.UserNowPlayingService
 import org.apache.kafka.streams.StreamsBuilder
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean
@@ -47,12 +48,14 @@ class KafkaStreamsSpringBeanConfig(
   @Bean
   fun kafkaStreamsTopology(
     redisTemplate: StringRedisTemplate,
-    kafkaStreamsBuilder: StreamsBuilder
+    kafkaStreamsBuilder: StreamsBuilder,
+    userNowPlayingService: UserNowPlayingService
   ): KafkaStreamsTopology = KafkaStreamsTopology(
     kafkaStreamsConfig = this.kafkaStreamsConfigProperties,
     httpUrlConfigs = this.kafkaHttpUrlConfigProperties,
     kafkaStreamsBuilder = kafkaStreamsBuilder,
     redisClient = redisTemplate,
+    userNowPlayingService = userNowPlayingService
   )
 
   @Bean
