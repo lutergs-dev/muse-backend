@@ -44,5 +44,5 @@ custom:
       public: ${RSA_PUBLIC_KEY_PATH}
       private: ${RSA_PRIVATE_KEY_PATH}
     token-expire:
-      access-token: ${ACCESS_TOKEN_EXPIRE_HOUR}
-      refresh-token: ${REFRESH_TOKEN_EXPIRE_HOUR}
+      access-token: ${ACCESS_TOKEN_EXPIRE_SECOND}
+      refresh-token: ${REFRESH_TOKEN_EXPIRE_SECOND}
