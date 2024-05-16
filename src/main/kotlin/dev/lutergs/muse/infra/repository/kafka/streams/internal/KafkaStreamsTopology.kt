@@ -21,12 +21,11 @@ class KafkaStreamsTopology(
   private val kafkaStreamsConfig: KafkaStreamsConfigProperties,
   private val httpUrlConfigs: dev.lutergs.muse.infra.config.properties.KafkaHttpUrlConfigProperties,
   private val kafkaStreamsBuilder: StreamsBuilder,
-  private val objectMapper: ObjectMapper,
   private val redisClient: StringRedisTemplate
 ) {
   private val nowPlayingSerde = Serdes.serdeFrom(
-    NowPlayingSerializer(this.objectMapper),
-    NowPlayingDeserializer(this.objectMapper)
+    NowPlayingSerializer(),
+    NowPlayingDeserializer()
   )
   private val customLongSerde = Serdes.serdeFrom(
     LongSerializer(),
@@ -36,7 +35,7 @@ class KafkaStreamsTopology(
   init { this.build() }
 
   @PostConstruct
-  fun registerKafkaStreams() {
+  private fun registerKafkaStreams() {
     this.redisClient.opsForHash<String, String>().put(
       "KafkaStreamsClient",
       this.kafkaStreamsConfig.currentMachineKey,
@@ -45,7 +44,7 @@ class KafkaStreamsTopology(
   }
 
   @PreDestroy
-  fun unregisterKafkaStreams() {
+  private fun unregisterKafkaStreams() {
     this.redisClient.opsForHash<String, String>().delete(
       "KafkaStreamsClient",
       this.kafkaStreamsConfig.currentMachineKey

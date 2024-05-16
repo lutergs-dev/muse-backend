@@ -5,13 +5,15 @@ import org.springframework.boot.context.properties.NestedConfigurationProperty
 import java.time.Duration
 
 @ConfigurationProperties(prefix = "custom.kafka.streams")
-data class KafkaStreamsConfigProperties (
+class KafkaStreamsConfigProperties (
   val communicateKey: String,
-  val currentMachineKey: String,
+  currentMachineKey: String,
   val inputTopicName: String,
   @NestedConfigurationProperty val store: KafkaStreamsStoreConfig,
   @NestedConfigurationProperty val time: KafkaStreamsTimeConfig
-)
+) {
+  val currentMachineKey = currentMachineKey.takeLast(10)
+}
 
 data class KafkaStreamsStoreConfig(
   val ttlStoreName: String,

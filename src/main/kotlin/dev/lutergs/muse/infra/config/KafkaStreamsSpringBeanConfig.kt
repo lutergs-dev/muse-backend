@@ -47,14 +47,12 @@ class KafkaStreamsSpringBeanConfig(
   @Bean
   fun kafkaStreamsTopology(
     redisTemplate: StringRedisTemplate,
-    objectMapper: ObjectMapper,
     kafkaStreamsBuilder: StreamsBuilder
   ): KafkaStreamsTopology = KafkaStreamsTopology(
     kafkaStreamsConfig = this.kafkaStreamsConfigProperties,
     httpUrlConfigs = this.kafkaHttpUrlConfigProperties,
     kafkaStreamsBuilder = kafkaStreamsBuilder,
     redisClient = redisTemplate,
-    objectMapper = objectMapper
   )
 
   @Bean

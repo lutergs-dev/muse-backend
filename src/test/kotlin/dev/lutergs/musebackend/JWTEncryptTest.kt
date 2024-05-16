@@ -1,6 +1,6 @@
 package dev.lutergs.musebackend
 
-import dev.lutergs.muse.t.infra.crypto.DefaultKeyPair
+import dev.lutergs.muse.infra.crypto.DefaultKeyPair
 import io.jsonwebtoken.Jwts
 import org.junit.jupiter.api.Test
 import java.time.OffsetDateTime
@@ -41,6 +41,4 @@ class JWTEncryptTest {
 
     println(decryptResult)
   }
-
-
 }
