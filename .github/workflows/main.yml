@@ -63,7 +63,7 @@ jobs:
           push: true
           tags: |
             ${{ steps.login-to-ecr.outputs.registry }}/${{ vars.ECR_REPOSITORY_NAME }}:${{ github.sha }}
-            ${{ steps.login-to-ecr.outputs.registry }}/${{ vars.ECR_REPOSITORY_NAME }}:$VERSION
+            ${{ steps.login-to-ecr.outputs.registry }}/${{ vars.ECR_REPOSITORY_NAME }}:${{ env.VERSION }} 
 
       - name: install kubectl
         id: install-kubectl
