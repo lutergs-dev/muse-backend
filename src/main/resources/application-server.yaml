@@ -5,11 +5,10 @@ spring:
       client-id: ${KAFKA_CLIENT_ID}
     properties:
       sasl.jaas.config: org.apache.kafka.common.security.plain.PlainLoginModule required username='${KAFKA_API_KEY:api_key}' password='${KAFKA_API_SECRET:api_secret}';
+      sasl.mechanism: PLAIN
+      security.protocol: SASL_SSL
     streams:
       application-id: ${KAFKA_CLIENT_ID}
-      bootstrap-servers: pkc-e82om.ap-northeast-2.aws.confluent.cloud:9092
-      properties:
-        sasl.jaas.config: org.apache.kafka.common.security.plain.PlainLoginModule required username='${KAFKA_API_KEY:api_key}' password='${KAFKA_API_SECRET:api_secret}';
 
   datasource:
     username: ${ORACLE_USERNAME}
