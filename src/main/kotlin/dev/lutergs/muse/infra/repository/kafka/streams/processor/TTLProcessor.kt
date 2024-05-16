@@ -27,8 +27,8 @@ class TTLProcessor(
     this.userTrackStateStore = this.context.getStateStore(this.userTrackStoreName)
 
     this.context.schedule(this.scanFrequency, PunctuationType.WALL_CLOCK_TIME) { timestamp ->
-      val pausedCutoff = timestamp - this.pausedTimeout.toMillis()
-      val playingCutoff = timestamp - this.playingTimeout.toMillis()
+      val pausedCutoff = (timestamp - this.pausedTimeout.toMillis()) / 1000L
+      val playingCutoff = (timestamp - this.playingTimeout.toMillis()) / 1000L
 
       this.userTrackStateStore.all().use { all ->
         all.forEachRemaining { kv ->
