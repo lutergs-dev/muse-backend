@@ -1,6 +1,7 @@
 package dev.lutergs.muse.infra.repository.kafka.streams.processor
 
 import dev.lutergs.muse.domain.entity.track.PlaybackStatus
+import dev.lutergs.muse.domain.entity.track.Track
 import dev.lutergs.muse.domain.entity.userInfo.NowPlaying
 import dev.lutergs.muse.service.UserNowPlayingService
 import org.apache.kafka.streams.processor.PunctuationType
@@ -12,29 +13,37 @@ import java.time.Duration
 
 
 class TTLProcessor(
-  private val maxAge: Duration,
+  private val pausedTimeout: Duration,
+  private val playingTimeout: Duration,
   private val scanFrequency: Duration,
-  private val ttlStoreName: String,
   private val userTrackStoreName: String,
   private val userNowPlayingService: UserNowPlayingService
 ): Processor<Long, NowPlaying?, Long, NowPlaying?> {
   private lateinit var context: ProcessorContext<Long, NowPlaying?>
-  private lateinit var ttlStateStore: KeyValueStore<Long, Long>
   private lateinit var userTrackStateStore: KeyValueStore<Long, NowPlaying>
 
   override fun init(context: ProcessorContext<Long, NowPlaying?>) {
     this.context = context
-    this.ttlStateStore = this.context.getStateStore(this.ttlStoreName)
     this.userTrackStateStore = this.context.getStateStore(this.userTrackStoreName)
 
     this.context.schedule(this.scanFrequency, PunctuationType.WALL_CLOCK_TIME) { timestamp ->
-      val cutOff = timestamp - this.maxAge.toMillis()
+      val pausedCutoff = timestamp - this.pausedTimeout.toMillis()
+      val playingCutoff = timestamp - this.playingTimeout.toMillis()
 
-      this.ttlStateStore.all().use { all ->
+      this.userTrackStateStore.all().use { all ->
         all.forEachRemaining { kv ->
-          if (kv.value != null && kv.value < cutOff) {
-            // timeout 이라면, 그냥 timeout 난 API 를 재호출
-            this.userNowPlayingService.changeTrackPlayStatus(kv.key, PlaybackStatus.STOPPED)
+          when (kv.value.status) {
+            PlaybackStatus.PAUSED -> {
+              if (kv.value.timestamp < pausedCutoff) {
+                this.userNowPlayingService.changeUserTrack(kv.key, Track.nullTrack(), PlaybackStatus.STOPPED)
+              }
+            }
+            PlaybackStatus.PLAYING -> {
+              if (kv.value.timestamp < playingCutoff) {
+                this.userNowPlayingService.changeUserTrack(kv.key, Track.nullTrack(), PlaybackStatus.STOPPED)
+              }
+            }
+            PlaybackStatus.STOPPED -> {/* DO NOTHING WHEN STOPPED */}
           }
         }
       }
@@ -43,14 +52,6 @@ class TTLProcessor(
 
   override fun process(record: Record<Long, NowPlaying?>) {
     if (record.value() != null) {
-      when (record.value()!!.status) {
-        PlaybackStatus.PLAYING, PlaybackStatus.PAUSED -> {
-          this.ttlStateStore.put(record.key(), record.timestamp())
-        }
-        PlaybackStatus.STOPPED -> {
-          this.ttlStateStore.delete(record.key())
-        }
-      }
       this.userTrackStateStore.put(record.key(), record.value())
     }
   }

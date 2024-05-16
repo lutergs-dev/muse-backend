@@ -11,11 +11,11 @@ data class User (
   val nowPlaying: NowPlaying
 ) {
 
-  fun changeTrack(track: Track): User {
+  fun changeTrack(track: Track, playbackStatus: PlaybackStatus): User {
     return User(
       id = this.id,
       info = this.info,
-      nowPlaying = NowPlaying.fromTrack(track)
+      nowPlaying = this.nowPlaying.changeTrack(track, playbackStatus)
     )
   }
 

@@ -32,10 +32,10 @@ custom:
       current-machine-key: ${STREAMS_MACHINE_KEY}
       input-topic-name: ${STREAMS_INPUT_TOPIC_NAME}
       store:
-        ttl-store-name: ${STREAMS_TTL_STORE}
         user-now-playing-store-name: ${STREAMS_USER_NOW_PLAYING_STORE}
       time:
-        stop-timeout-second: ${STREAMS_STOP_TIMEOUT_SECOND}
+        pause-timeout-second: ${STREAMS_PAUSE_TIMEOUT_SECOND}
+        playing-timeout-second: ${STREAMS_PLAYING_TIMEOUT_SECOND}
         scan-frequency-second: ${STREAMS_SCAN_FREQUENCY_SECOND}
   web:
     domain: ${MUSE_DOMAIN}

@@ -16,14 +16,15 @@ class KafkaStreamsConfigProperties (
 }
 
 data class KafkaStreamsStoreConfig(
-  val ttlStoreName: String,
   val userNowPlayingStoreName: String
 )
 
 data class KafkaStreamsTimeConfig(
-  val stopTimeoutSecond: Long,
+  val pauseTimeoutSecond: Long,
+  val playingTimeoutSecond: Long,
   val scanFrequencySecond: Long
 ) {
-  val stopTimeout: Duration = Duration.ofSeconds(this.stopTimeoutSecond)
+  val pauseTimeout: Duration = Duration.ofSeconds(this.pauseTimeoutSecond)
+  val playingTimeout: Duration = Duration.ofSeconds(this.playingTimeoutSecond)
   val scanFrequency: Duration = Duration.ofSeconds(this.scanFrequencySecond)
 }

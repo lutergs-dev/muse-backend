@@ -3,8 +3,8 @@ package dev.lutergs.muse.infra.rest.muse.dto
 import dev.lutergs.muse.domain.entity.track.Track
 
 data class UserChangeTrackDto (
-  val userId: Long,
-  val track: Track
+  val track: Track,
+  val playbackStatus: String
 )
 
 data class UserLoginDto(

@@ -5,20 +5,23 @@ import dev.lutergs.muse.domain.entity.track.PlaybackStatus
 import dev.lutergs.muse.domain.entity.track.Track
 import dev.lutergs.muse.domain.repository.NowPlayingNotifier
 import dev.lutergs.muse.domain.repository.UserInfoRepository
+import jakarta.transaction.Transactional
 
-class UserNowPlayingService(
+open class UserNowPlayingService(
   private val userInfoRepository: UserInfoRepository,
   private val notifier: NowPlayingNotifier
 ) {
 
   // user 가 다음 곡으로 넘김
-  fun changeUserTrack(userId: Long, track: Track) {
+  @Transactional
+  open fun changeUserTrack(userId: Long, track: Track, playbackStatus: PlaybackStatus) {
     this.userInfoRepository.getUser(userId)
-      ?.let { this.modify(it) { user -> user.changeTrack(track)} }
+      ?.let { this.modify(it) { user -> user.changeTrack(track, playbackStatus)} }
       ?: throw IllegalStateException("존재하지 않는 user 입니다.")
   }
 
-  fun changeTrackPlayStatus(userId: Long, status: PlaybackStatus) {
+  @Transactional
+  open fun changeTrackPlayStatus(userId: Long, status: PlaybackStatus) {
     this.userInfoRepository.getUser(userId)
       ?.let { this.modify(it) { user -> user.setPlaybackStatus(status) } }
       ?: throw IllegalStateException("존재하지 않는 user 입니다.")

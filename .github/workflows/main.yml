@@ -46,6 +46,7 @@ jobs:
       - name: Build JAR
         run: |
           gradle bootJar
+          echo "VERSION=$(gradle properties | grep "^version:" | awk '{print $2}')" >> "$GITHUB_ENV"
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -62,7 +63,7 @@ jobs:
           push: true
           tags: |
             ${{ steps.login-to-ecr.outputs.registry }}/${{ vars.ECR_REPOSITORY_NAME }}:${{ github.sha }}
-            ${{ steps.login-to-ecr.outputs.registry }}/${{ vars.ECR_REPOSITORY_NAME }}:latest
+            ${{ steps.login-to-ecr.outputs.registry }}/${{ vars.ECR_REPOSITORY_NAME }}:$VERSION
 
       - name: install kubectl
         id: install-kubectl

@@ -1,8 +1,8 @@
 package dev.lutergs.muse.infra.rest.muse
 
 import dev.lutergs.muse.domain.entity.track.PlaybackStatus
-import dev.lutergs.muse.domain.entity.track.Track
 import dev.lutergs.muse.infra.crypto.TokenManager
+import dev.lutergs.muse.infra.rest.muse.dto.UserChangeTrackDto
 import dev.lutergs.muse.infra.rest.muse.dto.UserChangeTrackPlayStatusDto
 import dev.lutergs.muse.service.UserNowPlayingService
 import org.springframework.http.HttpStatus
@@ -16,8 +16,8 @@ class UserNowPlayingRestHandler(
 
   fun changeTrack(request: ServerRequest): ServerResponse {
     return this.validateAccessToken(request) { userId ->
-      request.body(Track::class.java)
-        .let { this.userNowPlayingService.changeUserTrack(userId, it) }
+      request.body(UserChangeTrackDto::class.java)
+        .let { this.userNowPlayingService.changeUserTrack(userId, it.track, PlaybackStatus.valueOf(it.playbackStatus)) }
         .let { ServerResponse.ok().body(it) }
     }
   }

@@ -61,33 +61,25 @@ class KafkaStreamsTopology(
       ).withOffsetResetPolicy(Topology.AutoOffsetReset.LATEST)
     )
 
-    val ttlStateStore = Stores.keyValueStoreBuilder(
-      Stores.persistentKeyValueStore(this.kafkaStreamsConfig.store.ttlStoreName),
-      this.customLongSerde,    // input topic key
-      this.customLongSerde     // input topic message's timestamp
-    )
-
     val userTrackKVStore = Stores.keyValueStoreBuilder(
       Stores.persistentKeyValueStore(this.kafkaStreamsConfig.store.userNowPlayingStoreName),
       this.customLongSerde,
       this.nowPlayingSerde
     )
 
-    this.kafkaStreamsBuilder.addStateStore(ttlStateStore)
     this.kafkaStreamsBuilder.addStateStore(userTrackKVStore)
 
     userAndTrackStream
       .process(
         TTLProcessorSupplier(
-          maxAge = this.kafkaStreamsConfig.time.stopTimeout,
+          pausedTimeout = this.kafkaStreamsConfig.time.pauseTimeout,
+          playingTimeout = this.kafkaStreamsConfig.time.playingTimeout,
           scanFrequency = this.kafkaStreamsConfig.time.scanFrequency,
-          ttlStoreName = this.kafkaStreamsConfig.store.ttlStoreName,
           userTrackStoreName = this.kafkaStreamsConfig.store.userNowPlayingStoreName,
           userNowPlayingService = this.userNowPlayingService
         ),
-        this.kafkaStreamsConfig.store.ttlStoreName, this.kafkaStreamsConfig.store.userNowPlayingStoreName
+        this.kafkaStreamsConfig.store.userNowPlayingStoreName
       )
-//      .to(this.kafkaStreamsConfig.inputTopicName, Produced.with(this.customLongSerde, this.nowPlayingSerde))
   }
 }
 

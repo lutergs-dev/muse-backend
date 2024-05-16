@@ -15,19 +15,11 @@ class KafkaStreamsStateStore(
 ): StreamsBuilderFactoryBean.Listener {
   private val logger = LoggerFactory.getLogger(this::class.java)
 
-  lateinit var ttlStore: ReadOnlyKeyValueStore<Long, Long>
   lateinit var userTrackStore: ReadOnlyKeyValueStore<Long, NowPlaying>
 
   init { builder.addListener(this) }
 
   override fun streamsAdded(id: String, streams: KafkaStreams) {
-    this.ttlStore = streams.store(
-      StoreQueryParameters.fromNameAndType(
-        this.kafkaStreamsConfig.store.ttlStoreName,
-        QueryableStoreTypes.keyValueStore()
-      )
-    )
-
     this.userTrackStore = streams.store(
       StoreQueryParameters.fromNameAndType(
         this.kafkaStreamsConfig.store.userNowPlayingStoreName,
