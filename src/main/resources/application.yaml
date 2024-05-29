@@ -1,4 +1,5 @@
 spring:
+
   application:
     name: muse-backend
 
@@ -23,7 +24,9 @@ spring:
     hibernate:
       ddl-auto: validate
 
-
+  threads:
+    virtual:
+      enabled: true
 
 custom:
   kafka:

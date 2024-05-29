@@ -3,10 +3,12 @@ spring:
     bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS}
     producer:
       client-id: ${KAFKA_CLIENT_ID}
-    properties:
-      sasl.jaas.config: org.apache.kafka.common.security.plain.PlainLoginModule required username='${KAFKA_API_KEY:api_key}' password='${KAFKA_API_SECRET:api_secret}';
     streams:
       application-id: ${KAFKA_CLIENT_ID}
+    properties:
+      sasl.jaas.config: org.apache.kafka.common.security.plain.PlainLoginModule required username='${KAFKA_API_KEY:api_key}' password='${KAFKA_API_SECRET:api_secret}';
+      ssl.truststore.location: ${KAFKA_TRUSTSTORE_PATH}
+      ssl.truststore.password: ${KAFKA_TRUSTSTORE_PASSWORD}
 
   datasource:
     username: ${ORACLE_USERNAME}
