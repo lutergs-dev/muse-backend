@@ -9,6 +9,7 @@ spring:
   kafka:
     producer:
       acks: all
+      compression-type: lz4
     streams:
       security:
         protocol: SASL_SSL
